@@ -17,6 +17,7 @@ class SplashView extends StatelessWidget {
             SvgPicture.asset("assets/splash/Hungry_.svg"),
             Spacer(),
             Image.asset("assets/splash/image 1.png"),
+            
           ],
         ),
       ),
