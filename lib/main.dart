@@ -1,4 +1,5 @@
 import 'package:app_food/features/auth/view/login_view.dart';
+import 'package:app_food/features/auth/view/sighup_view.dart';
 import 'package:app_food/features/splash/splash_view.dart';
 import 'package:flutter/material.dart';
 
@@ -14,7 +15,7 @@ class AppFood extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'AppFood',
-      home: LoginView(),
+      home: SighUpView(),
     );
   }
 }

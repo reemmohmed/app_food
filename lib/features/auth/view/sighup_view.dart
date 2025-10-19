@@ -3,19 +3,22 @@ import 'dart:developer';
 import 'package:app_food/core/constants/app_color.dart';
 import 'package:app_food/features/auth/view/widget/custom_auth_button.dart';
 import 'package:app_food/features/shared/custom-text_form.dart';
-import 'package:app_food/features/shared/subtitel_widget.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 
-class LoginView extends StatelessWidget {
-  const LoginView({super.key});
+class SighUpView extends StatelessWidget {
+  const SighUpView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final TextEditingController nameController = TextEditingController();
+
     final TextEditingController emailController = TextEditingController();
     final TextEditingController passwordController = TextEditingController();
+    final TextEditingController conFirmpasswordController =
+        TextEditingController();
     final GlobalKey<FormState> form = GlobalKey<FormState>();
 
     return GestureDetector(
@@ -32,28 +35,32 @@ class LoginView extends StatelessWidget {
                   Gap(80),
                   SvgPicture.asset("assets/splash/Hungry_.svg"),
 
-                  SubtitelTextWidget(
-                    text: "Wellcom to visit an AppFood",
-                    color: Colors.white,
-                  ),
-                  Gap(50),
+                  Gap(25),
+                  CustomTextForm(hintText: "name", controller: nameController),
+                  Gap(15),
                   CustomTextForm(
-                    hintText: "Email Adrees",
+                    hintText: "email adress",
                     controller: emailController,
                   ),
-
-                  Gap(25),
+                  Gap(15),
                   CustomTextForm(
                     hintText: "password",
                     controller: passwordController,
                     passwordobscureText: true,
                   ),
+
+                  Gap(15),
+                  CustomTextForm(
+                    hintText: "Confirmpassword",
+                    controller: conFirmpasswordController,
+                    passwordobscureText: true,
+                  ),
                   Gap(30),
                   CustomAuthButton(
-                    text: "Login",
+                    text: "Sighup",
                     onTap: () {
                       if (form.currentState!.validate()) {
-                        log("Sucess");
+                        log('Sucsess');
                       }
                     },
                   ),
