@@ -34,44 +34,50 @@ class _RootState extends State<Root> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: Container(
-        padding: EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: AppColor.primary,
+      bottomNavigationBar: Theme(
+        data: Theme.of(context).copyWith(
+          splashColor: Colors.transparent, // 🔥 تمنع الدايرة
+          // highlightColor: Colors.transparent, // 🔥 تمنع المستطيل
         ),
-        child: BottomNavigationBar(
-          elevation: 0,
-          selectedItemColor: Colors.white,
-          unselectedItemColor: Colors.grey,
+        child: Container(
+          padding: EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            color: AppColor.primary,
+          ),
+          child: BottomNavigationBar(
+            elevation: 0,
+            selectedItemColor: Colors.white,
+            unselectedItemColor: Colors.grey,
 
-          type: BottomNavigationBarType.fixed,
-          onTap: (index) {
-            setState(() => curntScreen = index);
-            controller.jumpToPage(curntScreen);
-          },
+            type: BottomNavigationBarType.fixed,
+            onTap: (index) {
+              setState(() => curntScreen = index);
+              controller.jumpToPage(curntScreen);
+            },
 
-          currentIndex: curntScreen,
-          backgroundColor: Colors.transparent,
+            currentIndex: curntScreen,
+            backgroundColor: Colors.transparent,
 
-          items: [
-            BottomNavigationBarItem(
-              label: "Home",
-              icon: Icon(CupertinoIcons.home),
-            ),
-            BottomNavigationBarItem(
-              label: "cart",
-              icon: Icon(CupertinoIcons.cart),
-            ),
-            BottomNavigationBarItem(
-              label: "Orders",
-              icon: Icon(Icons.local_restaurant),
-            ),
-            BottomNavigationBarItem(
-              label: "Home",
-              icon: Icon(CupertinoIcons.profile_circled),
-            ),
-          ],
+            items: [
+              BottomNavigationBarItem(
+                label: "Home",
+                icon: Icon(CupertinoIcons.home),
+              ),
+              BottomNavigationBarItem(
+                label: "cart",
+                icon: Icon(CupertinoIcons.cart),
+              ),
+              BottomNavigationBarItem(
+                label: "Orders",
+                icon: Icon(Icons.local_restaurant),
+              ),
+              BottomNavigationBarItem(
+                label: "Home",
+                icon: Icon(CupertinoIcons.profile_circled),
+              ),
+            ],
+          ),
         ),
       ),
       body: PageView(controller: controller, children: pages),
