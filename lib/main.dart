@@ -16,6 +16,7 @@ class AppFood extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'AppFood',
+      theme: ThemeData(scaffoldBackgroundColor: Colors.white),
       home: Root(),
     );
   }
