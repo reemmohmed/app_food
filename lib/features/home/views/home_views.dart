@@ -65,8 +65,9 @@ class _HomeViewsState extends State<HomeViews> {
                 ),
               ),
             ),
+          
             SliverPadding(
-              
+
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               sliver: SliverGrid.builder(
                 itemCount: 6,
