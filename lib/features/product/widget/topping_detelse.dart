@@ -1,9 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:app_food/features/shared/titel_text_widget.dart';
+import 'package:gap/gap.dart';
 
 class ToppingDetelse extends StatelessWidget {
-  const ToppingDetelse({super.key});
+  const ToppingDetelse({
+    super.key,
+    required this.imagepath,
+    required this.titel,
+    this.onTap,
+  });
+  final String imagepath;
+  final String titel;
+  final void Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -28,24 +37,24 @@ class ToppingDetelse extends StatelessWidget {
             ],
           ),
 
-          padding: const EdgeInsets.symmetric(horizontal: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 3),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              TitelTextWidget(
-                text: "Tomato",
-                fontSize: 12,
-                color: Colors.white,
-              ),
-              const CircleAvatar(
+              TitelTextWidget(text: titel, fontSize: 12, color: Colors.white),
+              // Gap(15),
+              CircleAvatar(
                 backgroundColor: Color(0xffEF2A39),
                 radius: 12,
-                child: Icon(
-                  CupertinoIcons.add,
+                child: GestureDetector(
+                  onTap: onTap,
+                  child: Icon(
+                    CupertinoIcons.add,
 
-                  color: Color(0xffFFFFFF),
+                    color: Color(0xffFFFFFF),
 
-                  size: 16,
+                    size: 16,
+                  ),
                 ),
               ),
             ],
@@ -104,7 +113,7 @@ class ToppingDetelse extends StatelessWidget {
                   ],
                 ),
                 child: Image.asset(
-                  "assets/detels/tomato.png",
+                  imagepath,
                   width: 55,
                   height: 45.91,
                   fit: BoxFit.cover,

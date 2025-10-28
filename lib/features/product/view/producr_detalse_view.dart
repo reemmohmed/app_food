@@ -1,6 +1,7 @@
 import 'package:app_food/core/constants/app_color.dart';
 import 'package:app_food/features/product/widget/slider_detalse.dart';
 import 'package:app_food/features/product/widget/topping_detelse.dart';
+import 'package:app_food/features/shared/custom_button.dart';
 import 'package:app_food/features/shared/subtitel_widget.dart';
 import 'package:app_food/features/shared/titel_text_widget.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,38 +14,81 @@ class ProducrDetalseView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(backgroundColor: Colors.white),
+      appBar: AppBar(
+        scrolledUnderElevation: 0,
+        surfaceTintColor: Colors.transparent,
+        backgroundColor: Colors.white,
+      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SliderDetalse(valuel: 1, onChanged: (v) {}),
-            TitelTextWidget(text: "Toppings"),
-            Gap(50),
-            Center(child: ToppingDetelse()),
-            Container(
-              height: 200,
-              width: 150,
-              decoration: BoxDecoration(
-                boxShadow: [
-                  // ظل ناعم أسفل الصورة فقط
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.12),
-                    offset: const Offset(0, 4),
-                    blurRadius: 5,
-                    spreadRadius: -9,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SliderDetalse(valuel: 1, onChanged: (v) {}),
+              TitelTextWidget(text: "Toppings"),
+              Gap(50),
+              SingleChildScrollView(
+                clipBehavior: Clip.none,
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: List.generate(10, (context) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: ToppingDetelse(
+                        imagepath: "assets/detels/tomato.png",
+                        titel: "Tomato",
+                      ),
+                    );
+                  }),
+                ),
+              ),
+              Gap(70),
+              TitelTextWidget(text: "Side options"),
+              Gap(50),
+              SingleChildScrollView(
+                clipBehavior: Clip.none,
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: List.generate(10, (context) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: ToppingDetelse(
+                        imagepath: "assets/detels/tomato.png",
+                        titel: "Tomato",
+                      ),
+                    );
+                  }),
+                ),
+              ),
+
+              Gap(70),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SubtitelTextWidget(
+                        text: "Total",
+
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xff3C2F2F),
+                      ),
+                      SubtitelTextWidget(
+                        text: "\$18.19",
+                        fontSize: 30,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xff3C2F2F),
+                      ),
+                    ],
                   ),
+                  CustomButton(titel: "Add To Cart"),
                 ],
               ),
-              child: Image.asset(
-                "assets/detels/tomato.png",
-                width: 55,
-                height: 45.91,
-                fit: BoxFit.cover,
-              ),
-            ),
-          ],
+              Gap(100),
+            ],
+          ),
         ),
       ),
     );
