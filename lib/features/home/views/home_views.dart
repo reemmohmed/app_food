@@ -3,6 +3,7 @@ import 'package:app_food/features/home/views/widget/card_item.dart';
 import 'package:app_food/features/home/views/widget/catogery_item.dart';
 import 'package:app_food/features/home/views/widget/saerch_app.dart';
 import 'package:app_food/features/home/views/widget/user_header.dart';
+import 'package:app_food/features/product/view/producr_detalse_view.dart';
 import 'package:app_food/features/shared/subtitel_widget.dart';
 import 'package:app_food/features/shared/titel_text_widget.dart';
 import 'package:flutter/cupertino.dart';
@@ -65,9 +66,8 @@ class _HomeViewsState extends State<HomeViews> {
                 ),
               ),
             ),
-          
-            SliverPadding(
 
+            SliverPadding(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               sliver: SliverGrid.builder(
                 itemCount: 6,
@@ -79,11 +79,21 @@ class _HomeViewsState extends State<HomeViews> {
                   childAspectRatio: 0.74,
                 ),
                 itemBuilder: (context, index) {
-                  return CardItem(
-                    image: "assets/splash/image 1.png",
-                    rate: "4.9",
-                    subtitel: "Wendy's Burger",
-                    titel: "Cheeseburger",
+                  return GestureDetector(
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (c) {
+                          return ProducrDetalseView();
+                        },
+                      ),
+                    ),
+                    child: CardItem(
+                      image: "assets/splash/image 1.png",
+                      rate: "4.9",
+                      subtitel: "Wendy's Burger",
+                      titel: "Cheeseburger",
+                    ),
                   );
                 },
               ),
