@@ -32,7 +32,7 @@ class ProducrDetalseView extends StatelessWidget {
                 clipBehavior: Clip.none,
                 scrollDirection: Axis.horizontal,
                 child: Row(
-                  children: List.generate(10, (context) {
+                  children: List.generate(10, (index) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 12),
                       child: ToppingDetelse(
@@ -50,7 +50,7 @@ class ProducrDetalseView extends StatelessWidget {
                 clipBehavior: Clip.none,
                 scrollDirection: Axis.horizontal,
                 child: Row(
-                  children: List.generate(10, (context) {
+                  children: List.generate(10, (index) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 12),
                       child: ToppingDetelse(
@@ -83,6 +83,9 @@ class ProducrDetalseView extends StatelessWidget {
                       ),
                     ],
                   ),
+                  // it must go a Card so i want a customize a arowback in the card
+                  // if user go in here moust see a preapre a arowbace
+                  // also not prearear
                   CustomButton(titel: "Add To Cart"),
                 ],
               ),
