@@ -9,7 +9,9 @@ class CustomButton extends StatelessWidget {
     required this.titel,
     this.horizontal = 18,
     this.vertical = 16,
-    this.width, this.color,
+    // this.height = 50,
+    this.width,
+    this.color,
   });
   final void Function()? onTap;
   final double horizontal;
@@ -17,11 +19,13 @@ class CustomButton extends StatelessWidget {
   final String titel;
   final double? width;
   final Color? color;
+  // final double height;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
+        // height: height,
         width: width,
         padding: EdgeInsets.symmetric(
           horizontal: horizontal,
@@ -29,14 +33,12 @@ class CustomButton extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-          color:color?? AppColor.primary,
+          color: color ?? AppColor.primary,
         ),
-        child: Center(
-          child: SubtitelTextWidget(
-            text: titel,
-            color: Color(0xffFFFFFF),
-            fontWeight: FontWeight.w600,
-          ),
+        child: SubtitelTextWidget(
+          text: titel,
+          color: Color(0xffFFFFFF),
+          fontWeight: FontWeight.w600,
         ),
       ),
     );

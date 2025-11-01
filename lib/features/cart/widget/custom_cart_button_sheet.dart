@@ -6,29 +6,40 @@ class CustomCartButtonSheet extends StatelessWidget {
   const CustomCartButtonSheet({
     super.key,
     required this.titel,
+    required this.titelButton,
     required this.price,
+    this.colorcontdecoration = Colors.white,
     this.onTap,
+    this.horizontal = 18,
+    this.vertical = 16,
+    this.hight = 50,
   });
 
   final String titel;
+  final String titelButton;
+  final double hight;
   final String price;
+  final double horizontal;
+  final double vertical;
   final void Function()? onTap;
+  final Color colorcontdecoration;
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: 120,
       padding: EdgeInsets.symmetric(horizontal: 10),
 
       decoration: BoxDecoration(
-        color: Colors.white10,
+        color: colorcontdecoration,
 
         borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(16),
-          topRight: Radius.circular(16),
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
         ),
       ),
-      height: 100,
+
       child: Padding(
-        padding: const EdgeInsets.only(left: 12, top: 5),
+        padding: const EdgeInsets.only(left: 15, top: 10),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -41,27 +52,48 @@ class CustomCartButtonSheet extends StatelessWidget {
                   fontWeight: FontWeight.w700,
                   color: Color(0xff3C2F2F),
                 ),
-                SubtitelTextWidget(
-                  text: price,
-                  fontSize: 30,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xff3C2F2F),
+                RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: '\$', // رمز الدولار
+                        style: TextStyle(
+                          color: Colors.green, // اللون الأخضر
+
+                          fontSize: 30,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      TextSpan(
+                        text: price, // باقي السعر
+                        style: TextStyle(
+                          color: Color(0xff3C2F2F),
+                          fontWeight: FontWeight.w600,
+                          // اللون العادي
+                          fontSize: 30,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
+                // if price duleeer not fond in api price
+                // SubtitelTextWidget(
+                //   text: price,
+                //   fontSize: 30,
+                //   fontWeight: FontWeight.w600,
+                //   color: Color(0xff3C2F2F),
+                // ),
               ],
             ),
             // it must go a Card so i want a customize a arowback in the card
             // if user go in here moust see a preapre a arowbace
             // also not prearear
-            Padding(
-              padding: const EdgeInsets.only(bottom: 20, top: 7),
-              child: CustomButton(
-                titel: "Checkout",
+            CustomButton(
+              titel: titelButton,
 
-                vertical: 20,
-                horizontal: 40,
-
-                onTap: onTap,
-              ),
+              horizontal: horizontal,
+              vertical: vertical,
+              onTap: onTap,
             ),
           ],
         ),

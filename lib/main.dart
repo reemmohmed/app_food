@@ -1,4 +1,5 @@
 import 'package:app_food/features/root.dart';
+import 'package:app_food/features/splash/splash_view.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -14,7 +15,7 @@ class AppFood extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'AppFood',
       theme: ThemeData(scaffoldBackgroundColor: Colors.white),
-      home: Root(),
+      home: SplashView(),
     );
   }
 }
