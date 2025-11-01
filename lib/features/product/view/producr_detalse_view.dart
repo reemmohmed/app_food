@@ -1,10 +1,8 @@
-import 'package:app_food/core/constants/app_color.dart';
 import 'package:app_food/features/product/widget/slider_detalse.dart';
 import 'package:app_food/features/product/widget/topping_detelse.dart';
 import 'package:app_food/features/shared/custom_button.dart';
 import 'package:app_food/features/shared/subtitel_widget.dart';
 import 'package:app_food/features/shared/titel_text_widget.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 

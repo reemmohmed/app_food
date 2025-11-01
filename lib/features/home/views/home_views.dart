@@ -1,14 +1,9 @@
-import 'package:app_food/core/constants/app_color.dart';
 import 'package:app_food/features/home/views/widget/card_item.dart';
 import 'package:app_food/features/home/views/widget/catogery_item.dart';
 import 'package:app_food/features/home/views/widget/saerch_app.dart';
 import 'package:app_food/features/home/views/widget/user_header.dart';
 import 'package:app_food/features/product/view/producr_detalse_view.dart';
-import 'package:app_food/features/shared/subtitel_widget.dart';
-import 'package:app_food/features/shared/titel_text_widget.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
 
 class HomeViews extends StatefulWidget {

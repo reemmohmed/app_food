@@ -73,7 +73,7 @@ class _RootState extends State<Root> {
                 icon: Icon(Icons.local_restaurant),
               ),
               BottomNavigationBarItem(
-                label: "Home",
+                label: "Profile",
                 icon: Icon(CupertinoIcons.profile_circled),
               ),
             ],
@@ -82,8 +82,8 @@ class _RootState extends State<Root> {
       ),
       body: PageView(
         controller: controller,
-        children: pages,
         physics: NeverScrollableScrollPhysics(),
+        children: pages,
       ),
     );
   }

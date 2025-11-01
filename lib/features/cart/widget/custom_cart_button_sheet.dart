@@ -1,4 +1,3 @@
-
 import 'package:app_food/features/shared/custom_button.dart';
 import 'package:app_food/features/shared/subtitel_widget.dart';
 import 'package:flutter/material.dart';
@@ -53,11 +52,16 @@ class CustomCartButtonSheet extends StatelessWidget {
             // it must go a Card so i want a customize a arowback in the card
             // if user go in here moust see a preapre a arowbace
             // also not prearear
-            CustomButton(
-              titel: "Checkout",
-              vertical: 20,
-              horizontal: 30,
-              onTap: onTap,
+            Padding(
+              padding: const EdgeInsets.only(bottom: 20, top: 7),
+              child: CustomButton(
+                titel: "Checkout",
+
+                vertical: 20,
+                horizontal: 40,
+
+                onTap: onTap,
+              ),
             ),
           ],
         ),
