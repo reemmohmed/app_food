@@ -27,7 +27,7 @@ class SubtitelTextWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       text,
-      // controll the size of text
+      // controll the size of text it is import
       textScaler: TextScaler.linear(1.2),
       maxLines: maxLines,
       textAlign: textAlign,
