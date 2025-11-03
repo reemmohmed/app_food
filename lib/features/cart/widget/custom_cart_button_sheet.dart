@@ -41,9 +41,11 @@ class CustomCartButtonSheet extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.only(left: 15, top: 10),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center, //
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Column(
+              mainAxisAlignment: MainAxisAlignment.center, // م
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SubtitelTextWidget(
@@ -88,12 +90,15 @@ class CustomCartButtonSheet extends StatelessWidget {
             // it must go a Card so i want a customize a arowback in the card
             // if user go in here moust see a preapre a arowbace
             // also not prearear
-            CustomButton(
-              titel: titelButton,
+            Padding(
+              padding: const EdgeInsets.only(top: 30, bottom: 10),
+              child: CustomButton(
+                titel: titelButton,
 
-              horizontal: horizontal,
-              vertical: vertical,
-              onTap: onTap,
+                horizontal: horizontal,
+                vertical: vertical,
+                onTap: onTap,
+              ),
             ),
           ],
         ),

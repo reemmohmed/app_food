@@ -16,7 +16,7 @@ class CartView extends StatelessWidget {
           children: [
             Expanded(
               child: ListView.builder(
-                padding: const EdgeInsets.only(top: 20),
+                padding: const EdgeInsets.only(top: 20, bottom: 500),
                 itemCount: 4,
                 itemBuilder: (context, index) {
                   return CardItemcart(

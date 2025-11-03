@@ -1,3 +1,5 @@
+import 'package:app_food/features/Order_CheckOut/views/order_check_out_view.dart';
+import 'package:app_food/features/cart/widget/custom_cart_button_sheet.dart';
 import 'package:app_food/features/product/widget/slider_detalse.dart';
 import 'package:app_food/features/product/widget/topping_detelse.dart';
 import 'package:app_food/features/shared/custom_button.dart';
@@ -32,7 +34,7 @@ class ProducrDetalseView extends StatelessWidget {
                 child: Row(
                   children: List.generate(10, (index) {
                     return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
                       child: ToppingDetelse(
                         imagepath: "assets/detels/tomato.png",
                         titel: "Tomato",
@@ -50,7 +52,7 @@ class ProducrDetalseView extends StatelessWidget {
                 child: Row(
                   children: List.generate(10, (index) {
                     return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
                       child: ToppingDetelse(
                         imagepath: "assets/detels/tomato.png",
                         titel: "Tomato",
@@ -60,36 +62,31 @@ class ProducrDetalseView extends StatelessWidget {
                 ),
               ),
 
-              Gap(70),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SubtitelTextWidget(
-                        text: "Total",
-
-                        fontWeight: FontWeight.w700,
-                        color: Color(0xff3C2F2F),
-                      ),
-                      SubtitelTextWidget(
-                        text: "\$18.19",
-                        fontSize: 30,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xff3C2F2F),
-                      ),
-                    ],
-                  ),
-                  // it must go a Card so i want a customize a arowback in the card
-                  // if user go in here moust see a preapre a arowbace
-                  // also not prearear
-                  CustomButton(titel: "Add To Cart"),
-                ],
-              ),
-              Gap(100),
+              Gap(300),
             ],
           ),
+        ),
+      ),
+      bottomSheet: Container(
+        decoration: BoxDecoration(
+          boxShadow: [BoxShadow(color: Colors.grey, blurRadius: 15)],
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(16),
+            topRight: Radius.circular(16),
+          ),
+        ),
+
+        child: CustomCartButtonSheet(
+          price: "18.9",
+          titel: "Total",
+
+          titelButton: "AddTocard",
+          vertical: 20,
+          horizontal: 25,
+          // it must go a Card so i want a customize a arowback in the card
+          // if user go in here moust see a preapre a arowbace
+          // also not prearear
+          onTap: () {},
         ),
       ),
     );

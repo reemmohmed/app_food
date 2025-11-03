@@ -69,7 +69,7 @@ class _RootState extends State<Root> {
                 icon: Icon(CupertinoIcons.cart),
               ),
               BottomNavigationBarItem(
-                label: "Orders",
+                label: "Orders History",
                 icon: Icon(Icons.local_restaurant),
               ),
               BottomNavigationBarItem(

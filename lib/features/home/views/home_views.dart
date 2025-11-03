@@ -57,6 +57,7 @@ class _HomeViewsState extends State<HomeViews> {
                       catogetry: catogetry,
                       selectIndex: selectIndex,
                     ),
+                    Gap(20),
                   ],
                 ),
               ),
@@ -71,7 +72,7 @@ class _HomeViewsState extends State<HomeViews> {
 
                   crossAxisSpacing: 12,
                   mainAxisSpacing: 10,
-                  childAspectRatio: 0.74,
+                  childAspectRatio: 0.87,
                 ),
                 itemBuilder: (context, index) {
                   return GestureDetector(

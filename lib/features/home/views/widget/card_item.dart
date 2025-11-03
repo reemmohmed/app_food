@@ -18,21 +18,27 @@ class CardItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: EdgeInsets.only(top: 40),
+      shadowColor: Colors.grey,
+      // margin: EdgeInsets.only(top: 40),
+      elevation: 10,
+
       color: Color(0xffFFFFFF),
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.symmetric(horizontal: 15),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Image.asset(image),
+            Center(child: Image.asset(image, height: 121, width: 120)),
             TitelTextWidget(text: titel),
             SubtitelTextWidget(text: subtitel),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 SubtitelTextWidget(text: "⭐️ $rate"),
-                Icon(CupertinoIcons.heart_fill, color: AppColor.primary),
+                Icon(
+                  CupertinoIcons.heart_fill,
+                  color: Colors.deepOrangeAccent.shade700,
+                ),
               ],
             ),
           ],

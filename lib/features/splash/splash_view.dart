@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:app_food/core/constants/app_color.dart';
+import 'package:app_food/features/auth/view/login_view.dart';
 import 'package:app_food/features/root.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -40,7 +41,7 @@ class _SplashViewState extends State<SplashView>
         context,
         MaterialPageRoute(
           builder: (context) {
-            return Root();
+            return LoginView();
           },
         ),
       );

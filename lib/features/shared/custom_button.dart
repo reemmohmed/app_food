@@ -35,10 +35,12 @@ class CustomButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           color: color ?? AppColor.primary,
         ),
-        child: SubtitelTextWidget(
-          text: titel,
-          color: Color(0xffFFFFFF),
-          fontWeight: FontWeight.w600,
+        child: Center(
+          child: SubtitelTextWidget(
+            text: titel,
+            color: Color(0xffFFFFFF),
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
     );

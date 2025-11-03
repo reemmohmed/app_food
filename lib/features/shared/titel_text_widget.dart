@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 
 class TitelTextWidget extends StatelessWidget {
-  const TitelTextWidget(
-      {super.key,
-      required this.text,
-      this.fontWeight = FontWeight.bold,
-      this.fontSize = 20,
-      this.color,
-      this.overflow = TextOverflow.ellipsis,
-      this.fontStyle = FontStyle.normal,
-      this.maxLines,
-      this.decoration = TextDecoration.none});
+  const TitelTextWidget({
+    super.key,
+    required this.text,
+    this.fontWeight = FontWeight.bold,
+    this.fontSize = 20,
+    this.color,
+    this.overflow = TextOverflow.ellipsis,
+    this.fontStyle = FontStyle.normal,
+    this.maxLines = 2,
+    this.decoration = TextDecoration.none,
+  });
   final String text;
   final FontWeight? fontWeight;
   final double? fontSize;
@@ -22,14 +23,19 @@ class TitelTextWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(text,
-        maxLines: maxLines,
-        style: TextStyle(
-            overflow: overflow,
-            fontSize: fontSize,
-            fontWeight: fontWeight,
-            color: color,
-            fontStyle: fontStyle,
-            decoration: decoration));
+    return Text(
+      text,
+      maxLines: maxLines,
+      textScaler: TextScaler.linear(1.0),
+      style: TextStyle(
+        textBaseline: TextBaseline.alphabetic,
+        overflow: overflow,
+        fontSize: fontSize,
+        fontWeight: fontWeight,
+        color: color,
+        fontStyle: fontStyle,
+        decoration: decoration,
+      ),
+    );
   }
 }

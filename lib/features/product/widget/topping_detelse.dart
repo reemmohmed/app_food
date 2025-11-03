@@ -1,3 +1,4 @@
+import 'package:app_food/core/constants/app_color.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:app_food/features/shared/titel_text_widget.dart';
@@ -21,10 +22,11 @@ class ToppingDetelse extends StatelessWidget {
       children: [
         // الجزء البني (في الخلف)
         Container(
-          width: 84,
+          width: 88,
           height: 61,
           decoration: const BoxDecoration(
-            color: Color(0xff3C2F2F),
+            color: AppColor.primary,
+            // color: Color(0xff3C2F2F),
             borderRadius: BorderRadius.vertical(bottom: Radius.circular(16)),
 
             boxShadow: [
@@ -37,23 +39,33 @@ class ToppingDetelse extends StatelessWidget {
             ],
           ),
 
-          padding: const EdgeInsets.symmetric(horizontal: 3),
+          padding: const EdgeInsets.only(left: 2),
+          // titel , icon
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              TitelTextWidget(text: titel, fontSize: 12, color: Colors.white),
+              Expanded(
+                child: TitelTextWidget(
+                  text: titel,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 10,
+                  color: Colors.white,
+                ),
+              ),
               // Gap(15),
-              CircleAvatar(
-                backgroundColor: Color(0xffEF2A39),
-                radius: 12,
-                child: GestureDetector(
-                  onTap: onTap,
-                  child: Icon(
-                    CupertinoIcons.add,
+              Expanded(
+                child: CircleAvatar(
+                  backgroundColor: Color(0xffEF2A39),
+                  radius: 12,
+                  child: GestureDetector(
+                    onTap: onTap,
+                    child: Icon(
+                      CupertinoIcons.add,
 
-                    color: Color(0xffFFFFFF),
+                      color: Color(0xffFFFFFF),
 
-                    size: 16,
+                      size: 16,
+                    ),
                   ),
                 ),
               ),
@@ -67,7 +79,7 @@ class ToppingDetelse extends StatelessWidget {
           left: 0,
           right: 0,
           child: Container(
-            width: 84,
+            width: 88,
             height: 61,
 
             decoration: BoxDecoration(
@@ -98,7 +110,7 @@ class ToppingDetelse extends StatelessWidget {
                 ),
               ],
             ),
-
+            // shadow image
             child: Center(
               child: Container(
                 decoration: BoxDecoration(

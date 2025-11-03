@@ -37,32 +37,37 @@ class OrderHistoryViews extends StatelessWidget {
                               ),
                             ],
                           ),
-                          Column(
-                            children: [
-                              SubtitelTextWidget(
-                                text: "Hamburger veggie Burger",
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16,
-                              ),
-                              SubtitelTextWidget(
-                                text: "Quinty : x4",
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16,
-                              ),
-                              SubtitelTextWidget(
-                                text: "price: \$20",
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16,
-                              ),
-                              Gap(10),
-                            ],
+                          Flexible(
+                            child: Column(
+                              children: [
+                                SubtitelTextWidget(
+                                  text: "Hamburger veggie Burger",
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16,
+                                ),
+                                SubtitelTextWidget(
+                                  text: "Quinty : x4",
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16,
+                                ),
+                                SubtitelTextWidget(
+                                  text: "price: \$20",
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16,
+                                ),
+                                Gap(10),
+                              ],
+                            ),
                           ),
                         ],
                       ),
                       CustomButton(
                         titel: "Order Agin",
-                        width: double.infinity,
+                        horizontal: 40,
+                        vertical: 12,
                         color: Colors.grey.shade300,
+                        width:
+                            double.infinity, // خليه ياخد الحجم على قد المحتوى
                       ),
                     ],
                   ),

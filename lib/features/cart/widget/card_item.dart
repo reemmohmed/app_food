@@ -66,8 +66,6 @@ class CardItemcart extends StatelessWidget {
                     fontWeight: FontWeight.w400,
                     fontSize: 16,
                   ),
-               
-               
                 ],
               ),
             ),
