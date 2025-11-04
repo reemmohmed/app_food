@@ -36,7 +36,7 @@ class _SplashViewState extends State<SplashView>
     _controller.repeat(reverse: true); // يخلي الأنيميشن يروح وييجي بلُطف
 
     // بعد 3 ثواني ننتقل للصفحة التالية (Root)
-    Timer(const Duration(seconds: 7), () {
+    Timer(const Duration(seconds: 4), () {
       Navigator.push(
         context,
         MaterialPageRoute(
