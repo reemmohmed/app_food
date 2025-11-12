@@ -100,11 +100,7 @@ class LoginView extends StatelessWidget {
                                 text: "Login",
                                 onTap: () {
                                   if (form.currentState!.validate()) {
-                                    // final data = {
-                                    //   "email": emailController.text.trim(),
-                                    //   "password": passwordController.text
-                                    //       .trim(),
-                                    // };
+                                  
                                     context.read<AuthCubit>().login(
                                       email: emailController.text,
                                       password: passwordController.text,

@@ -1,27 +1,27 @@
-class User {
+class UserModel {
   String token;
   String name;
   String email;
   String? image;
-  dynamic address;
-  dynamic visa;
+  String address;
+  String? visa;
 
-  User({
+  UserModel({
     required this.token,
     required this.name,
     required this.email,
     this.image,
-    this.address,
+    required this.address,
     this.visa,
   });
 
-  factory User.fromJson(Map<String, dynamic> json) => User(
-    token: json['token'] as String? ?? '', // ✅ يمنع null error
-    name: json['name'] as String? ?? '',
-    email: json['email'] as String? ?? '',
-    image: json['image'] as String?,
-    address: json['address'],
-    visa: json['visa'],
+  factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
+    token: json['token']?.toString() ?? '',
+    name: json['name']?.toString() ?? '',
+    email: json['email']?.toString() ?? '',
+    image: json['image']?.toString(),
+    address: json['address']?.toString() ?? 'No address set',
+    visa: json['Visa']?.toString(),
   );
 
   Map<String, dynamic> toJson() => {
@@ -30,8 +30,9 @@ class User {
     'email': email,
     'image': image,
     'address': address,
-    'visa': visa,
+    'Visa': visa,
   };
+
   @override
   String toString() {
     return 'User(token: $token, name: $name, email: $email, image: $image, address: $address, visa: $visa)';

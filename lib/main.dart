@@ -28,8 +28,10 @@ class AppFood extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => AuthCubit(AuthRepo())),
-        // باقي الـ cubits هنا لو عندك
+        // 👈 AuthCubit ينفذ autoLogin مرة واحدة عند الإنشاء
+        BlocProvider(
+          create: (_) => AuthCubit(AuthRepo())..autoLogin(),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -38,6 +40,7 @@ class AppFood extends StatelessWidget {
           splashColor: Colors.transparent,
           scaffoldBackgroundColor: Colors.white,
         ),
+        // 👇 نستخدم SplashView كصفحة البداية
         home: const SplashView(),
       ),
     );

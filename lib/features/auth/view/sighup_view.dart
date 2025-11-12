@@ -23,7 +23,6 @@ class SighUpView extends StatelessWidget {
 
     final TextEditingController emailController = TextEditingController();
     final TextEditingController passwordController = TextEditingController();
-    final TextEditingController conFirmpasswordController =
         TextEditingController();
     final GlobalKey<FormState> form = GlobalKey<FormState>();
     return GestureDetector(

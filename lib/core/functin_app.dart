@@ -7,7 +7,7 @@ Future<dynamic> authDialow(BuildContext context) {
                 context: context,
                 barrierDismissible: false,
                 builder: (_) => const Center(
-                  child: CircularProgressIndicator(color: AppColor.primary),
+                  child: CircularProgressIndicator(color: Color.fromARGB(255, 18, 122, 213)),
                 ),
               );
   }

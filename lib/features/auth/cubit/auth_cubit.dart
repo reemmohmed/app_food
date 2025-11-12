@@ -1,9 +1,9 @@
 import 'dart:developer';
-
 import 'package:app_food/core/network/api_error.dart';
 import 'package:app_food/features/auth/data/auth_repo.dart';
-import 'package:app_food/features/auth/data/user.dart';
+import 'package:app_food/features/auth/data/user_model.dart';
 import 'package:bloc/bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:meta/meta.dart';
 
 part 'auth_state.dart';
@@ -11,18 +11,25 @@ part 'auth_state.dart';
 class AuthCubit extends Cubit<AuthState> {
   final AuthRepo authRepo;
 
+  UserModel? user; // حفظ بيانات المستخدم مؤقتًا
+  bool isGuest = true;
+  bool isLoadingUpdate = false;
+  bool isLoadingLogout = false;
+  String? selectedImage; // ✅ حفظ بيانات المستخدم مؤقتًا في الذاكرة
+
   AuthCubit(this.authRepo) : super(AuthInitial());
 
   // LOGIN
   Future<void> login({required String email, required String password}) async {
     emit(AuthLoading());
     try {
-      final user = await authRepo.login({"email": email, "password": password});
-      emit(AuthSuccess(user));
-      log("loginSucsess    ${user.toString()}");
+      final user = await authRepo.login(email, password);
+      this.user = user; // ✅ نخزنها محليًا
+      emit(AuthSuccess(user!));
+      log("loginSuccess    ${user.toString()}");
     } catch (e) {
       if (e is ApiError) {
-        emit(AuthFailure(e.message)); // ✅ يطبع رسالة السيرفر
+        emit(AuthFailure(e.message));
       } else {
         emit(AuthFailure(e.toString()));
       }
@@ -40,16 +47,9 @@ class AuthCubit extends Cubit<AuthState> {
   }) async {
     emit(AuthLoading());
     try {
-      final data = await authRepo.register({
-        "name": name,
-        "email": email,
-        "password": password,
-        "phone": phone,
-        "address": address,
-        "visa": visa,
-      });
-
-      emit(AuthSuccess(data));
+      final data = await authRepo.signup(name, email, password);
+      user = data; // ✅ نخزنها محليًا
+      emit(AuthSuccess(data!));
       log("register   ${data.toString()}");
     } catch (e) {
       if (e is ApiError) {
@@ -60,64 +60,112 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  // GET PROFILE
-  Future<void> getProfile() async {
-    emit(AuthLoading());
+  Future<void> autoLogin() async {
     try {
-      final data = await authRepo.getProfile();
-      emit(AuthSuccess(data));
-      log("getProfile   ${data.toString()}");
-    } catch (e) {
-      if (e is ApiError) {
-        emit(AuthFailure(e.message));
+      final userData = await authRepo.autoLogin();
+      isGuest = authRepo.isGuest;
+      if (userData != null) {
+        user = userData;
+        emit(AuthSuccess(userData));
       } else {
-        emit(AuthFailure(e.toString()));
+        emit(AuthInitial());
       }
+    } catch (e) {
+      emit(AuthFailure(e is ApiError ? e.message : e.toString()));
     }
   }
 
-  // UPDATE PROFILE
-  Future<void> updateProfile({
+  /// GET PROFILE
+  Future<void> getProfileData() async {
+    emit(AuthLoading());
+    try {
+      final fetchedUser = await authRepo.getProfileData();
+      user = fetchedUser;
+      emit(AuthSuccess(fetchedUser!));
+      log("getProfileData: ${fetchedUser.toString()}");
+    } catch (e) {
+      emit(AuthFailure(e is ApiError ? e.message : "Error in Profile"));
+    }
+  }
+
+  /// UPDATE PROFILE
+  ///
+
+  Future<void> updateProfileData({
     String? name,
     String? email,
-    String? image,
     String? address,
     String? visa,
+    String? imagePath,
   }) async {
+    if (name == null || email == null || address == null) {
+      emit(AuthFailure("Name, email and address are required"));
+      return;
+    }
+
     emit(AuthLoading());
     try {
-      final data = {
-        if (name != null) "name": name,
-        if (email != null) "email": email,
-        if (image != null) "image": image,
-        if (address != null) "address": address,
-        if (visa != null) "Visa": visa,
-      };
+      // final updatedUser = await authRepo.updateProfileData(
+      //   name: name,
+      //   email: email,
+      //   address: address,
+      //   visa: visa,
+      //   imagePath: imagePath,
+      // );
+final updatedUser = await authRepo.updateProfileData(
+  name: name,
+  email: email,
+  address: address,
+  visa: visa,
+  imagePath: imagePath,
+);
 
-      final user = await authRepo.updateProfile(data);
-      emit(AuthSuccess(user));
+if (updatedUser != null) {
+  user = updatedUser;
+  emit(AuthSuccess(updatedUser));
+  log("updateProfileData: ${updatedUser.toString()}");
+} else {
+  emit(AuthFailure("Failed to update profile"));
+}
 
-    } catch (e) {
-      if (e is ApiError) {
-        emit(AuthFailure(e.message));
+      if (updatedUser != null) {
+        user = updatedUser;
+        emit(AuthSuccess(updatedUser));
+        log("updateProfileData: ${updatedUser.toString()}");
       } else {
-        emit(AuthFailure(e.toString()));
+        emit(AuthFailure("Failed to update profile"));
       }
+    } catch (e) {
+      emit(AuthFailure(e is ApiError ? e.message : "Failed to update profile"));
     }
   }
 
-  // LOGOUT
+  /// LOGOUT
   Future<void> logout() async {
     emit(AuthLoading());
     try {
       await authRepo.logout();
+      user = null;
+      isGuest = true;
       emit(AuthLoggedOut());
+      log("logout success");
     } catch (e) {
-      if (e is ApiError) {
-        emit(AuthFailure(e.message));
-      } else {
-        emit(AuthFailure(e.toString()));
+      emit(AuthFailure(e is ApiError ? e.message : e.toString()));
+    }
+  }
+
+  /// PICK IMAGE
+  Future<void> pickImage() async {
+    try {
+      final pickedImage = await ImagePicker().pickImage(
+        source: ImageSource.gallery,
+      );
+      if (pickedImage != null) {
+        selectedImage = pickedImage.path;
+        log("Picked image: $selectedImage");
       }
+    } catch (e) {
+      emit(AuthFailure("Failed to pick image"));
     }
   }
 }

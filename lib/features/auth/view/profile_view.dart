@@ -3,7 +3,8 @@ import 'dart:io';
 import 'package:app_food/core/constants/app_color.dart';
 import 'package:app_food/features/Order_CheckOut/widget/custom_list_titel.dart';
 import 'package:app_food/features/auth/cubit/auth_cubit.dart';
-import 'package:app_food/features/auth/data/user.dart';
+import 'package:app_food/features/auth/data/user_model.dart';
+import 'package:app_food/features/auth/view/login_view.dart';
 import 'package:app_food/features/auth/view/widget/custom_text_form_feild_profile.dart';
 import 'package:app_food/features/shared/subtitel_widget.dart';
 import 'package:flutter/material.dart';
@@ -25,13 +26,13 @@ class _ProfileViewState extends State<ProfileView> {
   final TextEditingController deliveryAddress = TextEditingController();
   final TextEditingController password = TextEditingController();
 
-  User? user;
+  UserModel? user;
   File? pickedImage;
 
   @override
   void initState() {
     super.initState();
-    context.read<AuthCubit>().getProfile();
+    context.read<AuthCubit>().getProfileData();
   }
 
   Future<void> _pickImage() async {
@@ -75,8 +76,9 @@ class _ProfileViewState extends State<ProfileView> {
                 user = state.user;
                 name.text = user?.name ?? '';
                 email.text = user?.email ?? '';
-                deliveryAddress.text = user?.address ?? '';
-                password.text = "********";
+                deliveryAddress.text = user?.address ?? 'No address set';
+
+                password.text == "********" ? null : password.text;
               }
             },
             builder: (context, state) {
@@ -189,10 +191,11 @@ class _ProfileViewState extends State<ProfileView> {
                   text: 'Edit',
                   icon: Icons.edit,
                   onTap: () {
-                    context.read<AuthCubit>().updateProfile(
+                    context.read<AuthCubit>().updateProfileData(
                       name: name.text,
                       email: email.text,
                       address: deliveryAddress.text,
+                      imagePath: pickedImage?.path,
                     );
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
@@ -210,8 +213,18 @@ class _ProfileViewState extends State<ProfileView> {
                   text: 'Log out',
                   icon: Icons.output_sharp,
                   iconColor: Colors.red,
-                  onTap: () {
-                    context.read<AuthCubit>().logout();
+                  onTap: () async {
+                    await context.read<AuthCubit>().logout();
+
+                    if (!context.mounted) return; // ✅ تأكيد إن الودجت لسه موجود
+
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const LoginView(),
+                      ),
+                      (route) => false,
+                    );
                   },
                 ),
               ),

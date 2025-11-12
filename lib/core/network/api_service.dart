@@ -1,81 +1,50 @@
 import 'package:app_food/core/network/app_exception.dart';
 import 'package:app_food/core/network/dio_clint.dart';
 import 'package:dio/dio.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
 
 class ApiService {
-  final DioClint _dioClient = DioClint();
+  final DioClient _dioClient = DioClient();
 
-  /// دالة مساعدة تجيب التوكن من SharedPreferences
-  Future<String?> _getToken() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('token');
-  }
+  /// CRUD METHODS
 
-  /// GET
+  /// get
   Future<dynamic> get(String endPoint) async {
     try {
-      final token = await _getToken();
-      final response = await _dioClient.dio.get(
-        endPoint,
-        options: Options(
-          headers: token != null ? {'Authorization': 'Bearer $token'} : null,
-        ),
-      );
+      final response = await _dioClient.dio.get(endPoint);
       return response.data;
     } on DioException catch (e) {
-      throw ApiExceptions.handleError(e);
+      return ApiExceptions.handleError(e);
     }
   }
 
-  /// POST
+  /// post
   Future<dynamic> post(String endPoint, dynamic body) async {
     try {
-      final token = await _getToken();
-      final response = await _dioClient.dio.post(
-        endPoint,
-        data: body,
-        options: Options(
-          headers: token != null ? {'Authorization': 'Bearer $token'} : null,
-        ),
-      );
+      final response = await _dioClient.dio.post(endPoint, data: body);
       return response.data;
     } on DioException catch (e) {
-      throw ApiExceptions.handleError(e);
+      return ApiExceptions.handleError(e);
     }
   }
 
-  /// PUT
+  /// put || update
   Future<dynamic> put(String endPoint, dynamic body) async {
     try {
-      final token = await _getToken();
-      final response = await _dioClient.dio.put(
-        endPoint,
-        data: body,
-        options: Options(
-          headers: token != null ? {'Authorization': 'Bearer $token'} : null,
-        ),
-      );
+      final response = await _dioClient.dio.put(endPoint, data: body);
       return response.data;
     } on DioException catch (e) {
-      throw ApiExceptions.handleError(e);
+      return ApiExceptions.handleError(e);
     }
   }
 
-  /// DELETE
+  /// delete
   Future<dynamic> delete(String endPoint, dynamic body) async {
     try {
-      final token = await _getToken();
-      final response = await _dioClient.dio.delete(
-        endPoint,
-        data: body,
-        options: Options(
-          headers: token != null ? {'Authorization': 'Bearer $token'} : null,
-        ),
-      );
+      final response = await _dioClient.dio.delete(endPoint, data: body);
       return response.data;
     } on DioException catch (e) {
-      throw ApiExceptions.handleError(e);
+      return ApiExceptions.handleError(e);
     }
   }
 }
