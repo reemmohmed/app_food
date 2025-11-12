@@ -1,11 +1,16 @@
+import 'dart:io';
+
 import 'package:app_food/core/constants/app_color.dart';
 import 'package:app_food/features/Order_CheckOut/widget/custom_list_titel.dart';
+import 'package:app_food/features/auth/cubit/auth_cubit.dart';
+import 'package:app_food/features/auth/data/user.dart';
 import 'package:app_food/features/auth/view/widget/custom_text_form_feild_profile.dart';
 import 'package:app_food/features/shared/subtitel_widget.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ProfileView extends StatefulWidget {
   const ProfileView({super.key});
@@ -20,6 +25,27 @@ class _ProfileViewState extends State<ProfileView> {
   final TextEditingController deliveryAddress = TextEditingController();
   final TextEditingController password = TextEditingController();
 
+  User? user;
+  File? pickedImage;
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<AuthCubit>().getProfile();
+  }
+
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        pickedImage = File(pickedFile.path);
+      });
+      // هنا ممكن تبعتي الصورة للسيرفر بعد كده لو حبيتي
+      // context.read<AuthCubit>().updateProfileImage(pickedImage!);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -29,7 +55,6 @@ class _ProfileViewState extends State<ProfileView> {
         appBar: AppBar(
           automaticallyImplyLeading: false,
           backgroundColor: AppColor.primary,
-
           scrolledUnderElevation: 0,
           elevation: 0,
           actions: [
@@ -44,61 +69,104 @@ class _ProfileViewState extends State<ProfileView> {
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Container(
-                  height: 120,
-                  width: 120,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: NetworkImage(
-                        "https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8aW1hZ2V8ZW58MHx8MHx8fDA%3D&fm=jpg&q=60&w=3000",
-                      ),
-                    ),
-                    borderRadius: BorderRadius.circular(16),
-                    color: Colors.grey,
-                    border: BoxBorder.all(color: Colors.white, width: 2),
+          child: BlocConsumer<AuthCubit, AuthState>(
+            listener: (context, state) {
+              if (state is AuthSuccess) {
+                user = state.user;
+                name.text = user?.name ?? '';
+                email.text = user?.email ?? '';
+                deliveryAddress.text = user?.address ?? '';
+                password.text = "********";
+              }
+            },
+            builder: (context, state) {
+              if (state is AuthLoading) {
+                return const Center(
+                  child: CircularProgressIndicator(color: Colors.white),
+                );
+              } else if (state is AuthFailure) {
+                return Center(
+                  child: Text(
+                    state.error,
+                    style: const TextStyle(color: Colors.white),
                   ),
-                ),
-                Gap(20),
-                CustomTextFormFieldProfile(
-                  textEditingController: name,
-                  text: "name",
-                ),
-                Gap(20),
-                CustomTextFormFieldProfile(
-                  text: "email",
-                  textEditingController: email,
-                ),
-                Gap(20),
-                CustomTextFormFieldProfile(
-                  text: "deliveryAdress",
-                  textEditingController: deliveryAddress,
-                ),
-                Gap(20),
-                CustomTextFormFieldProfile(
-                  text: "password",
-                  textEditingController: password,
-                ),
-                Gap(25),
-                Divider(),
-                Gap(25),
-                CustomListTitel(
-                  tileColor: Color(0xffF3F4F6),
-                  activeColor: Colors.transparent,
-                  title: "Debit card",
-                  titelcolor: Colors.black,
-                  sub: "3566 **** **** 0505",
-                  iconPath: "assets/icons/visa.png",
-                  value: "cash",
-                  groupValue: "cash",
-                  onChanged: (value) {},
-                ),
-                Gap(200),
-              ],
-            ),
+                );
+              } else {
+                return SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      const Gap(10),
+
+                      // ✅ الصورة أو أول حرف من الاسم
+                      GestureDetector(
+                        onTap: _pickImage, // يفتح المعرض
+                        child: pickedImage != null
+                            ? CircleAvatar(
+                                radius: 60,
+                                backgroundImage: FileImage(pickedImage!),
+                              )
+                            : (user != null &&
+                                  user!.image != null &&
+                                  user!.image!.isNotEmpty)
+                            ? CircleAvatar(
+                                radius: 60,
+                                backgroundImage: NetworkImage(user!.image!),
+                              )
+                            : CircleAvatar(
+                                radius: 60,
+                                backgroundColor: Colors.white,
+                                child: Text(
+                                  user?.name != null && user!.name!.isNotEmpty
+                                      ? user!.name![0].toUpperCase()
+                                      : "?",
+                                  style: const TextStyle(
+                                    fontSize: 40,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColor.primary,
+                                  ),
+                                ),
+                              ),
+                      ),
+                      const Gap(20),
+                      CustomTextFormFieldProfile(
+                        textEditingController: name,
+                        text: "Name",
+                      ),
+                      const Gap(20),
+                      CustomTextFormFieldProfile(
+                        textEditingController: email,
+                        text: "Email",
+                      ),
+                      const Gap(20),
+                      CustomTextFormFieldProfile(
+                        textEditingController: deliveryAddress,
+                        text: "Delivery Address",
+                      ),
+                      const Gap(20),
+                      CustomTextFormFieldProfile(
+                        textEditingController: password,
+                        text: "Password",
+                      ),
+                      const Gap(25),
+                      const Divider(color: Colors.white),
+                      const Gap(25),
+                      CustomListTitel(
+                        tileColor: const Color(0xffF3F4F6),
+                        activeColor: Colors.transparent,
+                        title: "Debit card",
+                        titelcolor: Colors.black,
+                        sub: "3566 **** **** 0505",
+                        iconPath: "assets/icons/visa.png",
+                        value: "cash",
+                        groupValue: "cash",
+                        onChanged: (value) {},
+                      ),
+                      const Gap(200),
+                    ],
+                  ),
+                );
+              }
+            },
           ),
         ),
         bottomSheet: Container(
@@ -113,26 +181,38 @@ class _ProfileViewState extends State<ProfileView> {
           ),
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           child: Row(
-            mainAxisAlignment:
-                MainAxisAlignment.spaceEvenly, // توزيع الزرين بالتساوي
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              // 🔹 زر تعديل (Edit)
+              // 🔹 زر تعديل
               Expanded(
                 child: CustomButtomSheetProfile(
                   text: 'Edit',
                   icon: Icons.edit,
-                  onTap: () {},
+                  onTap: () {
+                    context.read<AuthCubit>().updateProfile(
+                      name: name.text,
+                      email: email.text,
+                      address: deliveryAddress.text,
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Profile updated successfully"),
+                      ),
+                    );
+                  },
                 ),
               ),
               const SizedBox(width: 20),
 
-              // 🔹 زر خروج (Logout)
+              // 🔹 زر خروج
               Expanded(
                 child: CustomButtomSheetProfile(
                   text: 'Log out',
                   icon: Icons.output_sharp,
                   iconColor: Colors.red,
-                  onTap: () {},
+                  onTap: () {
+                    context.read<AuthCubit>().logout();
+                  },
                 ),
               ),
             ],
@@ -151,17 +231,18 @@ class CustomButtomSheetProfile extends StatelessWidget {
     required this.icon,
     this.iconColor,
   });
+
   final Function()? onTap;
   final String text;
   final IconData icon;
   final Color? iconColor;
-  // is select contaiver
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 0, vertical: 20),
+        padding: const EdgeInsets.symmetric(vertical: 20),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
           color: AppColor.primary,
@@ -176,7 +257,7 @@ class CustomButtomSheetProfile extends StatelessWidget {
               color: Colors.white,
               fontWeight: FontWeight.w700,
             ),
-            Gap(20),
+            const Gap(20),
             Icon(icon, size: 25, color: iconColor ?? Colors.white),
           ],
         ),

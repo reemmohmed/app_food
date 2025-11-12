@@ -11,9 +11,12 @@ class CustomTextForm extends StatefulWidget {
     this.obscuringCharacter = ".",
     this.controller,
 
-    this.hintText,
+    this.hintText, this.textInputAction, this.onFieldSubmitted,
     // this.suffixIcon,
   });
+  final TextInputAction? textInputAction;
+    final Function(String)? onFieldSubmitted; 
+
   final String? lableText;
   final String obscuringCharacter;
   final bool passwordobscureText;
@@ -45,11 +48,14 @@ class _CustomTextFormState extends State<CustomTextForm> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+         onFieldSubmitted:widget. onFieldSubmitted,
       cursorHeight: 20,
       cursorColor: Colors.black,
       controller: widget.controller,
 
       obscureText: _obscureText,
+               textInputAction: widget.textInputAction ?? TextInputAction.next,
+
       validator: (valu) {
         if (valu == null || valu.isEmpty) {
           return "this failed is requierd ${widget.hintText}";
@@ -81,11 +87,13 @@ class _CustomTextFormState extends State<CustomTextForm> {
           fontSize: 18,
           color: Colors.black,
         ),
+        
         fillColor: Colors.white,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 18,
         ),
+        
 
         filled: true,
         border: OutlineInputBorder(

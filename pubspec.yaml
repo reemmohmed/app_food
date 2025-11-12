@@ -26,8 +26,10 @@ dependencies:
   dio: ^5.9.0
   flutter:
     sdk: flutter
+  flutter_bloc: ^9.1.1
   flutter_svg: ^2.2.1
   gap: ^3.0.1
+  image_picker: ^1.2.0
   shared_preferences: ^2.5.3
 
 dev_dependencies:
