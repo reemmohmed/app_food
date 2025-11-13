@@ -3,6 +3,8 @@ import 'package:app_food/features/auth/cubit/auth_cubit.dart';
 import 'package:app_food/features/auth/data/auth_repo.dart';
 import 'package:app_food/features/auth/view/login_view.dart';
 import 'package:app_food/features/auth/view/sighup_view.dart';
+import 'package:app_food/features/home/cubit/home_cubit.dart';
+import 'package:app_food/features/home/model/home_repo.dart';
 import 'package:flutter_bloc/flutter_bloc.dart'; // 👈 مهم جدًا
 
 import 'package:app_food/features/root.dart';
@@ -28,9 +30,12 @@ class AppFood extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        // 👈 AuthCubit ينفذ autoLogin مرة واحدة عند الإنشاء
+      
         BlocProvider(
           create: (_) => AuthCubit(AuthRepo())..autoLogin(),
+        ),
+        BlocProvider(
+          create: (_) => HomeCubit(HomeRepo()),
         ),
       ],
       child: MaterialApp(
@@ -40,7 +45,7 @@ class AppFood extends StatelessWidget {
           splashColor: Colors.transparent,
           scaffoldBackgroundColor: Colors.white,
         ),
-        // 👇 نستخدم SplashView كصفحة البداية
+        
         home: const SplashView(),
       ),
     );

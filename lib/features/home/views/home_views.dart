@@ -1,9 +1,12 @@
+import 'package:app_food/features/home/cubit/home_cubit.dart';
 import 'package:app_food/features/home/views/widget/card_item.dart';
+import 'package:app_food/features/home/views/widget/category_shimmer.dart';
 import 'package:app_food/features/home/views/widget/catogery_item.dart';
 import 'package:app_food/features/home/views/widget/saerch_app.dart';
 import 'package:app_food/features/home/views/widget/user_header.dart';
 import 'package:app_food/features/product/view/producr_detalse_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 
 class HomeViews extends StatefulWidget {
@@ -14,10 +17,10 @@ class HomeViews extends StatefulWidget {
 }
 
 class _HomeViewsState extends State<HomeViews> {
-  List<String> catogetry = ["all", "Burger", "Pizza", "Salad", "Drinks"];
   int selectIndex = 0;
   @override
   Widget build(BuildContext context) {
+    final homecubit =context.read<HomeCubit>().fetchCategories();
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
@@ -51,14 +54,24 @@ class _HomeViewsState extends State<HomeViews> {
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: Column(
-                  children: [
-                    CatogeryItem(
-                      catogetry: catogetry,
-                      selectIndex: selectIndex,
-                    ),
-                    Gap(20),
-                  ],
+                child: BlocBuilder<HomeCubit, HomeState>(
+                  builder: (context, state) {
+                  if (state is HomeLoading || state is HomeInitial) {
+      return const CategoryShimmer();
+                    } else if (state is HomeSuccess) {
+                      final categories = state.categories
+                          .map((e) => e.name)
+                          .toList();
+                      return CatogeryItem(
+                        catogetry: categories,
+                        selectIndex: selectIndex,
+                      );
+                    } else if (state is HomeFailure) {
+                      return Center(child: Text(state.error));
+                    } else {
+                      return const SizedBox();
+                    }
+                  },
                 ),
               ),
             ),

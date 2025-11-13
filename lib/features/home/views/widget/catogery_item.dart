@@ -1,11 +1,16 @@
 import 'package:app_food/core/constants/app_color.dart';
 import 'package:app_food/features/shared/titel_text_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 
 class CatogeryItem extends StatefulWidget {
-  const CatogeryItem({super.key, required this.catogetry, required this.selectIndex});
+  const CatogeryItem({
+    super.key,
+    required this.catogetry,
+    required this.selectIndex,
+  });
   final List catogetry;
-  final int selectIndex; 
+  final int selectIndex;
   @override
   State<CatogeryItem> createState() => _CatogeryItemState();
 }
@@ -17,6 +22,7 @@ class _CatogeryItemState extends State<CatogeryItem> {
     super.initState();
     selectIndex = widget.selectIndex;
   }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -39,7 +45,7 @@ class _CatogeryItemState extends State<CatogeryItem> {
                       : Color(0xffF3F4F6),
                 ),
                 child: TitelTextWidget(
-                  text:widget. catogetry[index],
+                  text: widget.catogetry[index],
                   color: selectIndex == index
                       ? Colors.white
                       : Color(0xff6A6A6A),

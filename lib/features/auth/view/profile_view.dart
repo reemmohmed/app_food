@@ -6,6 +6,7 @@ import 'package:app_food/features/auth/cubit/auth_cubit.dart';
 import 'package:app_food/features/auth/data/user_model.dart';
 import 'package:app_food/features/auth/view/login_view.dart';
 import 'package:app_food/features/auth/view/widget/custom_text_form_feild_profile.dart';
+import 'package:app_food/features/shared/show_dilog.dart';
 import 'package:app_food/features/shared/subtitel_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

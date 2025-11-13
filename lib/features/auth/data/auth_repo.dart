@@ -62,7 +62,7 @@ class AuthRepo {
       } else {
         throw ApiError(message: 'UnExpected Error From Server');
       }
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       throw ApiExceptions.handleError(e);
     } catch (e) {
       throw ApiError(message: e.toString());
