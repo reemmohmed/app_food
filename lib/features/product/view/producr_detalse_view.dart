@@ -9,8 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
 class ProducrDetalseView extends StatelessWidget {
-  const ProducrDetalseView({super.key});
-
+  const ProducrDetalseView({super.key, this.productId});
+  final productId; 
   @override
   Widget build(BuildContext context) {
     return Scaffold(

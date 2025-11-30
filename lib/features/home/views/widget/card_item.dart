@@ -28,9 +28,9 @@ class CardItem extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Center(child: Image.asset(image, height: 121, width: 120)),
+            Center(child: Image.network(image, height: 121, width: 120)),
             TitelTextWidget(text: titel),
-            SubtitelTextWidget(text: subtitel),
+            SubtitelTextWidget(text: subtitel, maxLines: 1),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

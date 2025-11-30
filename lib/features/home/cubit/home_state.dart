@@ -4,14 +4,29 @@ part of 'home_cubit.dart';
 sealed class HomeState {}
 
 final class HomeInitial extends HomeState {}
-class HomeLoading extends HomeState {}
-
-class HomeSuccess extends HomeState {
+// Categories
+class HomeCatogeryLoading extends HomeState {}
+class HomeCatogerySuccess extends HomeState {
   final List<CategoryModel> categories;
-  HomeSuccess(this.categories);
+  HomeCatogerySuccess(this.categories);
+}
+class HomeCatogeryFailure extends HomeState {
+  final String error;
+  HomeCatogeryFailure(this.error);
 }
 
-class HomeFailure extends HomeState {
+// Products
+class HomeProductLoading extends HomeState {}
+class HomeProductSuccess extends HomeState {
+  final List<Product> products;
+  HomeProductSuccess(this.products);
+}
+class HomeProductFailure extends HomeState {
   final String error;
-  HomeFailure(this.error);
+  HomeProductFailure(this.error);
+}
+// Product details state
+class HomeProductDetailSuccess extends HomeState {
+  final Product product;
+  HomeProductDetailSuccess(this.product);
 }

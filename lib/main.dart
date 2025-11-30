@@ -19,7 +19,7 @@ void main() {
   // await SystemChrome.setPreferredOrientations([
   //   DeviceOrientation.portraitUp, // يعني الطولي العادي فقط
   // ]);
-    Bloc.observer = MyBlocObserver();
+  Bloc.observer = MyBlocObserver();
   runApp(const AppFood());
 }
 
@@ -30,13 +30,20 @@ class AppFood extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-      
+        BlocProvider(create: (_) => AuthCubit(AuthRepo())..autoLogin()),
         BlocProvider(
-          create: (_) => AuthCubit(AuthRepo())..autoLogin(),
+          create: (context) {
+            final cubit = HomeCubit(HomeRepo());
+            cubit.fetchCategories(); // استدعاء الكاتيجوريز
+            cubit.fetchProducts(); // استدعاء المنتجات
+            return cubit;
+          },
         ),
-        BlocProvider(
-          create: (_) => HomeCubit(HomeRepo()),
-        ),
+
+        // BlocProvider(
+        //   create: (_) => HomeCubit(HomeRepo(),
+        //   ),
+        // ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -45,7 +52,7 @@ class AppFood extends StatelessWidget {
           splashColor: Colors.transparent,
           scaffoldBackgroundColor: Colors.white,
         ),
-        
+
         home: const SplashView(),
       ),
     );

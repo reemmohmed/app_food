@@ -9,9 +9,9 @@ class ApiService {
   /// CRUD METHODS
 
   /// get
-  Future<dynamic> get(String endPoint) async {
+  Future<dynamic> get(String endPoint,   {Map<String, dynamic>? queryParameters}) async {
     try {
-      final response = await _dioClient.dio.get(endPoint);
+      final response = await _dioClient.dio.get(endPoint, queryParameters: queryParameters, );
       return response.data;
     } on DioException catch (e) {
       return ApiExceptions.handleError(e);
