@@ -25,16 +25,17 @@ class ProductGridShimmer extends StatelessWidget {
     final width = MediaQuery.of(context).size.width;
     final crossAxisCount = width >= 600 ? 3 : 2;
     final childAspectRatio = width >= 600 ? 0.9 : 0.78;
-    final itemCount = crossAxisCount * 4; // صفين تقريبًا
 
-    return SliverGrid(
+    return GridView.builder(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      itemCount: crossAxisCount * 4,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: crossAxisCount,
         crossAxisSpacing: 12,
         mainAxisSpacing: 10,
         childAspectRatio: childAspectRatio,
       ),
-      delegate: SliverChildBuilderDelegate((context, index) {
+      itemBuilder: (context, index) {
         return const AppShimmer(
           child: Card(
             elevation: 0,
@@ -53,27 +54,31 @@ class ProductGridShimmer extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 8),
-                  DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                  SizedBox(
+                    height: 12,
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                      ),
                     ),
-                    child: SizedBox(height: 12),
                   ),
-                  SizedBox(height: 4),
-                  DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                  SizedBox(height: 6),
+                  SizedBox(
+                    height: 10,
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                      ),
                     ),
-                    child: SizedBox(height: 10),
                   ),
                 ],
               ),
             ),
           ),
         );
-      }, childCount: itemCount),
+      },
     );
   }
 }

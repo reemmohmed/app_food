@@ -29,22 +29,21 @@ class _HomeViewsState extends State<HomeViews> {
     super.initState();
 
     scrollController = ScrollController();
-    final homeCubit = context.read<HomeCubit>();
+    // final homeCubit = context.read<HomeCubit>();
 
-    // نجلب أول صفحة فقط
-    homeCubit.fetchCategories();
-    homeCubit.fetchProducts();
+    // // نجلب أول صفحة فقط
+    // homeCubit.fetchCategories();
+    // homeCubit.fetchProducts();
 
     // تحميل المزيد عند الوصول لنهاية الصفحة
     scrollController.addListener(() {
-      if (scrollController.position.pixels >=
-          scrollController.position.maxScrollExtent - 300) {
-        final homeCubit = context.read<HomeCubit>();
-        if (homeCubit.hasMore) {
-          homeCubit.fetchProducts();
-        }
-      }
-    });
+  final cubit = context.read<HomeCubit>();
+  if (scrollController.position.pixels >=
+      scrollController.position.maxScrollExtent - 300) {
+    cubit.fetchProducts(); // Cubit هو اللي بيتعامل مع hasMore & isFetching
+  }
+});
+
   }
 
   @override
@@ -58,81 +57,49 @@ class _HomeViewsState extends State<HomeViews> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        body: CustomScrollView(
-          controller: scrollController,
-          slivers: [
-            // ======================= HEADER =======================
-            SliverAppBar(
-              backgroundColor: Colors.white,
-              pinned: true,
-              floating: false,
-              automaticallyImplyLeading: false,
-              elevation: 0,
-              expandedHeight: 220,
-              collapsedHeight: 117,
-
-              // toolbarHeight: 220,
-              flexibleSpace: FlexibleSpaceBar(
-                background: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 20,
-                  ),
-                  child: Column(
-                    children: [
-                      UserHeader(
-                        username:
-                            context.watch<AuthCubit>().user?.name ?? "Guest",
-                        userImage: context.watch<AuthCubit>().user?.image,
-                      ),
-                      const Gap(10),
-                      const SearchApp(),
-                    ],
-                  ),
-                ),
-              ),
+        body: Column(
+          children: [
+            UserHeader(
+              username: context.watch<AuthCubit>().user?.name ?? "Guest",
+              userImage: context.watch<AuthCubit>().user?.image,
             ),
-
-            // ======================= CATEGORIES =======================
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: BlocBuilder<HomeCubit, HomeState>(
-                  buildWhen: (previous, current) =>
-                      current is HomeCatogeryLoading ||
-                      current is HomeCatogerySuccess ||
-                      current is HomeCatogeryFailure ||
-                      current is HomeInitial,
-                  builder: (context, state) {
-                    if (state is HomeCatogeryLoading || state is HomeInitial) {
-                      return const CategoryShimmer();
-                    } else if (state is HomeCatogerySuccess) {
-                      final categories = state.categories
-                          .map((e) => e.name)
-                          .toList();
-                      return CatogeryItem(
-                        catogetry: categories,
-                        selectIndex: selectIndex,
+            const Gap(10),
+            const SearchApp(),
+            Gap(12),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: BlocBuilder<HomeCubit, HomeState>(
+                buildWhen: (previous, current) =>
+                    current is HomeCatogeryLoading ||
+                    current is HomeCatogerySuccess ||
+                    current is HomeCatogeryFailure ||
+                    current is HomeInitial,
+                builder: (context, state) {
+                  if (state is HomeCatogeryLoading || state is HomeInitial) {
+                    return const CategoryShimmer();
+                  } else if (state is HomeCatogerySuccess) {
+                    final categories = state.categories
+                        .map((e) => e.name)
+                        .toList();
+                    return CatogeryItem(
+                      catogetry: categories,
+                      selectIndex: selectIndex,
+                    );
+                  } else if (state is HomeCatogeryFailure) {
+                    if (_isNoInternet(state.error)) {
+                      return NoInternetWidget(
+                        onRetry: () => context.read<HomeCubit>().refreshHome(),
                       );
-                    } else if (state is HomeCatogeryFailure) {
-                      if (_isNoInternet(state.error)) {
-                        return NoInternetWidget(
-                          onRetry: () =>
-                              context.read<HomeCubit>().refreshHome(),
-                        );
-                      }
-                      return Center(child: Text(state.error));
                     }
-                    return const SizedBox.shrink();
-                  },
-                ),
+                    return Center(child: Text(state.error));
+                  }
+                  return const SizedBox.shrink();
+                },
               ),
             ),
-
-            // ======================= PRODUCTS =======================
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              sliver: BlocBuilder<HomeCubit, HomeState>(
+            Gap(20),
+            Expanded(
+              child: BlocBuilder<HomeCubit, HomeState>(
                 buildWhen: (previous, current) =>
                     current is HomeProductLoading ||
                     current is HomeProductSuccess ||
@@ -141,17 +108,23 @@ class _HomeViewsState extends State<HomeViews> {
                   final cubit = context.read<HomeCubit>();
                   final products = cubit.products;
                   final width = MediaQuery.of(context).size.width;
+
                   final crossAxisCount = width >= 600 ? 3 : 2;
                   final childAspectRatio = width >= 600 ? 0.9 : 0.78;
 
-                  // تحميل أول صفحة
                   if (state is HomeProductLoading && products.isEmpty) {
                     return const ProductGridShimmer();
                   }
 
-                  // عرض المنتجات
-                  if (products.isNotEmpty) {
-                    return SliverGrid.builder(
+                  if (state is HomeProductSuccess ) {
+                     final products = state.products;
+                    return GridView.builder(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.vertical,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
+                      ),
                       itemCount: cubit.hasMore
                           ? products.length + 1
                           : products.length,
@@ -162,7 +135,6 @@ class _HomeViewsState extends State<HomeViews> {
                         childAspectRatio: childAspectRatio,
                       ),
                       itemBuilder: (context, index) {
-                        // لو وصلنا آخر عنصر → نعرض لودينج بس، بدون نداء للدالة!
                         if (index == products.length) {
                           return const Center(
                             child: CircularProgressIndicator(),
@@ -192,25 +164,21 @@ class _HomeViewsState extends State<HomeViews> {
                     );
                   }
 
-                  // لو حصل فشل
                   if (state is HomeProductFailure) {
-                    return SliverToBoxAdapter(
-                      child: _isNoInternet(state.error)
-                          ? NoInternetWidget(
-                              onRetry: () =>
-                                  context.read<HomeCubit>().refreshHome(),
-                            )
-                          : Center(child: Text(state.error)),
+                    return NoInternetWidget(
+                      onRetry: () => context.read<HomeCubit>().refreshHome(),
                     );
                   }
 
-                  return const SliverToBoxAdapter(child: SizedBox());
+                  return const SizedBox();
                 },
               ),
             ),
           ],
         ),
       ),
+
+   
     );
   }
 }

@@ -15,7 +15,7 @@ class HomeRepo {
     try {
       final response = await apiService.get("/categories");
       final data = response['data'] as List;
-      log("data Catogeries $data");
+      // log("data Catogeries $data");
       return data.map((e) => CategoryModel.fromJson(e)).toList();
     } on DioException catch (e) {
       throw ApiExceptions.handleError(e);
@@ -42,7 +42,7 @@ class HomeRepo {
       );
 
       final data = response['data'] as List;
-      log("fetchProducts $data");
+      // log("fetchProducts $data");
       return data.map((e) => Product.fromJson(e)).toList();
     } on DioException catch (e) {
       throw ApiExceptions.handleError(e);

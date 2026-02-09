@@ -8,12 +8,16 @@ part 'home_state.dart';
 
 class HomeCubit extends Cubit<HomeState> {
   final HomeRepo repo;
+
   HomeCubit(this.repo) : super(HomeInitial());
   int currentPage = 1;
   bool hasMore = true;
+  bool isFetching = false;
+
   List<Product> products = [];
 
   void refreshHome() {
+    if (isFetching) return; // يمنع التكرار
     currentPage = 1;
     hasMore = true;
     products.clear();
@@ -32,22 +36,21 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   Future<void> fetchProducts({String? category, String? search}) async {
-    if (!hasMore) return;
+    if (!hasMore || isFetching) return;
+
+    isFetching = true;
 
     try {
-      // مش لازم تبعتي HomeProductLoading لو جالنا صفحات إضافية
-      final allProducts = await repo.fetchProducts(
+      if (currentPage == 1) {
+        emit(HomeProductLoading());
+      }
+
+      final newProducts = await repo.fetchProducts(
         category: category,
         search: search,
         page: currentPage,
         limit: 10,
       );
-
-      // لو الداتا كبيرة والـ API ما بيدعم pagination حقيقي
-      // ممكن نعمل skip & take كحل مؤقت
-      // final newProducts = allProducts.skip((currentPage - 1) * 10).take(10).toList();
-
-      final newProducts = allProducts;
 
       if (newProducts.isEmpty) {
         hasMore = false;
@@ -59,34 +62,12 @@ class HomeCubit extends Cubit<HomeState> {
       emit(HomeProductSuccess(products));
     } catch (e) {
       emit(HomeProductFailure(e.toString()));
+    } finally {
+      isFetching = false;
     }
   }
 
-  // Future<void> fetchProducts({String? category, String? search}) async {
-  //   if (!hasMore) return;
-
-  //   try {
-  //     // emit(HomeProductLoading());  <-- مش لازم هنا أثناء تحميل صفحات إضافية
-
-  //     final newProducts = await repo.fetchProducts(
-  //       category: category,
-  //       search: search,
-  //       page: currentPage,
-  //       limit: 10,
-  //     );
-
-  //     if (newProducts.isEmpty) {
-  //       hasMore = false;
-  //     } else {
-  //       currentPage++;
-  //       products.addAll(newProducts);
-  //     }
-
-  //     emit(HomeProductSuccess(products));
-  //   } catch (e) {
-  //     emit(HomeProductFailure(e.toString()));
-  //   }
-  // }
+ 
 
   Future<void> fetchProductById(int id) async {
     try {
