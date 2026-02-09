@@ -1,16 +1,15 @@
 import 'package:app_food/core/bloc_observer.dart';
+import 'package:app_food/core/localization/app_localizations.dart';
+import 'package:app_food/core/localization/locale_cubit.dart';
 import 'package:app_food/features/auth/cubit/auth_cubit.dart';
 import 'package:app_food/features/auth/data/auth_repo.dart';
-import 'package:app_food/features/auth/view/login_view.dart';
-import 'package:app_food/features/auth/view/sighup_view.dart';
 import 'package:app_food/features/home/cubit/home_cubit.dart';
 import 'package:app_food/features/home/model/home_repo.dart';
-import 'package:flutter_bloc/flutter_bloc.dart'; // 👈 مهم جدًا
-
-import 'package:app_food/features/root.dart';
-import 'package:app_food/features/splash/splash_view.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart'; // 👈 مهم جدًا
+import 'package:flutter_localizations/flutter_localizations.dart';
+
+import 'package:app_food/features/splash/splash_view.dart';
 
 void main() {
   // WidgetsFlutterBinding.ensureInitialized();
@@ -39,21 +38,33 @@ class AppFood extends StatelessWidget {
             return cubit;
           },
         ),
+        BlocProvider(create: (_) => LocaleCubit()),
 
         // BlocProvider(
         //   create: (_) => HomeCubit(HomeRepo(),
         //   ),
         // ),
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'AppFood',
-        theme: ThemeData(
-          splashColor: Colors.transparent,
-          scaffoldBackgroundColor: Colors.white,
-        ),
-
-        home: const SplashView(),
+      child: BlocBuilder<LocaleCubit, Locale>(
+        builder: (context, locale) {
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'AppFood',
+            theme: ThemeData(
+              splashColor: Colors.transparent,
+              scaffoldBackgroundColor: Colors.white,
+            ),
+            locale: locale,
+            supportedLocales: AppLocalizations.supportedLocales,
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            home: const SplashView(),
+          );
+        },
       ),
     );
   }

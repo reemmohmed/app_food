@@ -1,4 +1,5 @@
 import 'package:app_food/core/constants/app_color.dart';
+import 'package:app_food/core/localization/app_localizations.dart';
 import 'package:app_food/features/shared/subtitel_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -16,6 +17,7 @@ class UserHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final l10n = AppLocalizations.of(context);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -28,7 +30,7 @@ class UserHeader extends StatelessWidget {
 
               color: AppColor.primary,
             ),
-            SubtitelTextWidget(text: "Hellow $username"),
+            SubtitelTextWidget(text: "${l10n.tr('hello')} $username"),
           ],
         ),
         ClipOval(

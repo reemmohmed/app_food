@@ -4,14 +4,15 @@ import 'package:app_food/core/utils/pref_helpers.dart';
 import 'package:dio/dio.dart';
 
 class DioClient {
-  final Dio _dio = Dio(
-    BaseOptions(
-      baseUrl: 'https://sonic-zdi0.onrender.com/api',
-      headers: {"Content-Type": 'application/json'},
-    ),
-  );
+  final Dio _dio;
 
-  DioClient() {
+  DioClient({String? baseUrl})
+    : _dio = Dio(
+        BaseOptions(
+          baseUrl: baseUrl ?? 'https://sonic-zdi0.onrender.com/api',
+          headers: {"Content-Type": 'application/json'},
+        ),
+      ) {
     // _dio.interceptors.add(
     //   LogInterceptor(requestBody: true, responseBody: true),
     // );

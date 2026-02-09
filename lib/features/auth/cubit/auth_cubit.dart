@@ -105,28 +105,13 @@ class AuthCubit extends Cubit<AuthState> {
 
     emit(AuthLoading());
     try {
-      // final updatedUser = await authRepo.updateProfileData(
-      //   name: name,
-      //   email: email,
-      //   address: address,
-      //   visa: visa,
-      //   imagePath: imagePath,
-      // );
-final updatedUser = await authRepo.updateProfileData(
-  name: name,
-  email: email,
-  address: address,
-  visa: visa,
-  imagePath: imagePath,
-);
-
-if (updatedUser != null) {
-  user = updatedUser;
-  emit(AuthSuccess(updatedUser));
-  log("updateProfileData: ${updatedUser.toString()}");
-} else {
-  emit(AuthFailure("Failed to update profile"));
-}
+      final updatedUser = await authRepo.updateProfileData(
+        name: name,
+        email: email,
+        address: address,
+        visa: visa,
+        imagePath: imagePath,
+      );
 
       if (updatedUser != null) {
         user = updatedUser;

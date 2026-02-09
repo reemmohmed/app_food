@@ -1,12 +1,15 @@
 import 'dart:io';
 
 import 'package:app_food/core/constants/app_color.dart';
+import 'package:app_food/core/localization/app_localizations.dart';
+import 'package:app_food/core/localization/locale_cubit.dart';
 import 'package:app_food/features/Order_CheckOut/widget/custom_list_titel.dart';
 import 'package:app_food/features/auth/cubit/auth_cubit.dart';
 import 'package:app_food/features/auth/data/user_model.dart';
 import 'package:app_food/features/auth/view/login_view.dart';
 import 'package:app_food/features/auth/view/widget/custom_text_form_feild_profile.dart';
-import 'package:app_food/features/shared/show_dilog.dart';
+import 'package:app_food/features/shared/no_internet_widget.dart';
+import 'package:app_food/features/shared/shimmer_widgets.dart';
 import 'package:app_food/features/shared/subtitel_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -50,6 +53,7 @@ class _ProfileViewState extends State<ProfileView> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
@@ -62,9 +66,12 @@ class _ProfileViewState extends State<ProfileView> {
           actions: [
             Padding(
               padding: const EdgeInsets.only(right: 10),
-              child: SvgPicture.asset(
-                "assets/icons/settings.svg",
-                color: Colors.white,
+              child: GestureDetector(
+                onTap: () => _showSettingsSheet(context),
+                child: SvgPicture.asset(
+                  "assets/icons/settings.svg",
+                  color: Colors.white,
+                ),
               ),
             ),
           ],
@@ -84,13 +91,17 @@ class _ProfileViewState extends State<ProfileView> {
             },
             builder: (context, state) {
               if (state is AuthLoading) {
-                return const Center(
-                  child: CircularProgressIndicator(color: Colors.white),
-                );
+                return const ProfileShimmer();
               } else if (state is AuthFailure) {
+                final error = state.error;
+                if (_isNoInternet(error)) {
+                  return NoInternetWidget(
+                    onRetry: () => context.read<AuthCubit>().getProfileData(),
+                  );
+                }
                 return Center(
                   child: Text(
-                    state.error,
+                    error,
                     style: const TextStyle(color: Colors.white),
                   ),
                 );
@@ -119,8 +130,8 @@ class _ProfileViewState extends State<ProfileView> {
                                 radius: 60,
                                 backgroundColor: Colors.white,
                                 child: Text(
-                                  user?.name != null && user!.name!.isNotEmpty
-                                      ? user!.name![0].toUpperCase()
+                                  user?.name != null && user!.name.isNotEmpty
+                                      ? user!.name[0].toUpperCase()
                                       : "?",
                                   style: const TextStyle(
                                     fontSize: 40,
@@ -133,22 +144,22 @@ class _ProfileViewState extends State<ProfileView> {
                       const Gap(20),
                       CustomTextFormFieldProfile(
                         textEditingController: name,
-                        text: "Name",
+                        text: l10n.tr('profile_name'),
                       ),
                       const Gap(20),
                       CustomTextFormFieldProfile(
                         textEditingController: email,
-                        text: "Email",
+                        text: l10n.tr('profile_email'),
                       ),
                       const Gap(20),
                       CustomTextFormFieldProfile(
                         textEditingController: deliveryAddress,
-                        text: "Delivery Address",
+                        text: l10n.tr('profile_address'),
                       ),
                       const Gap(20),
                       CustomTextFormFieldProfile(
                         textEditingController: password,
-                        text: "Password",
+                        text: l10n.tr('profile_password'),
                       ),
                       const Gap(25),
                       const Divider(color: Colors.white),
@@ -156,7 +167,7 @@ class _ProfileViewState extends State<ProfileView> {
                       CustomListTitel(
                         tileColor: const Color(0xffF3F4F6),
                         activeColor: Colors.transparent,
-                        title: "Debit card",
+                        title: l10n.tr('profile_debit_card'),
                         titelcolor: Colors.black,
                         sub: "3566 **** **** 0505",
                         iconPath: "assets/icons/visa.png",
@@ -189,7 +200,7 @@ class _ProfileViewState extends State<ProfileView> {
               // 🔹 زر تعديل
               Expanded(
                 child: CustomButtomSheetProfile(
-                  text: 'Edit',
+                  text: l10n.tr('profile_edit'),
                   icon: Icons.edit,
                   onTap: () {
                     context.read<AuthCubit>().updateProfileData(
@@ -199,9 +210,7 @@ class _ProfileViewState extends State<ProfileView> {
                       imagePath: pickedImage?.path,
                     );
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("Profile updated successfully"),
-                      ),
+                      SnackBar(content: Text(l10n.tr('profile_updated'))),
                     );
                   },
                 ),
@@ -211,7 +220,7 @@ class _ProfileViewState extends State<ProfileView> {
               // 🔹 زر خروج
               Expanded(
                 child: CustomButtomSheetProfile(
-                  text: 'Log out',
+                  text: l10n.tr('profile_logout'),
                   icon: Icons.output_sharp,
                   iconColor: Colors.red,
                   onTap: () async {
@@ -235,6 +244,152 @@ class _ProfileViewState extends State<ProfileView> {
       ),
     );
   }
+}
+
+extension _ProfileViewLanguageSheet on _ProfileViewState {
+  void _showSettingsSheet(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: 8),
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade400,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              ListTile(
+                leading: const Icon(Icons.language),
+                title: Text(l10n.tr('language_sheet_title')),
+                onTap: () {
+                  Navigator.pop(ctx);
+                  _showLanguageSheet(context);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.logout, color: Colors.red),
+                title: Text(
+                  l10n.tr('profile_logout'),
+                  style: const TextStyle(color: Colors.red),
+                ),
+                onTap: () async {
+                  Navigator.pop(ctx);
+                  await context.read<AuthCubit>().logout();
+                },
+              ),
+              const SizedBox(height: 8),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showLanguageSheet(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final currentCode = context.read<LocaleCubit>().state.languageCode;
+
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade400,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Center(
+                  child: Text(
+                    l10n.tr('language_sheet_title'),
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                _buildLanguageTile(
+                  ctx,
+                  code: 'ar',
+                  title: l10n.tr('language_ar'),
+                  currentCode: currentCode,
+                ),
+                _buildLanguageTile(
+                  ctx,
+                  code: 'en',
+                  title: l10n.tr('language_en'),
+                  currentCode: currentCode,
+                ),
+                _buildLanguageTile(
+                  ctx,
+                  code: 'de',
+                  title: l10n.tr('language_de'),
+                  currentCode: currentCode,
+                ),
+                const SizedBox(height: 8),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildLanguageTile(
+    BuildContext context, {
+    required String code,
+    required String title,
+    required String currentCode,
+  }) {
+    final isSelected = currentCode == code;
+    return ListTile(
+      leading: Icon(
+        Icons.language,
+        color: isSelected ? AppColor.primary : Colors.grey,
+      ),
+      title: Text(title),
+      trailing: isSelected
+          ? const Icon(Icons.check, color: AppColor.primary)
+          : null,
+      onTap: () {
+        context.read<LocaleCubit>().changeLocale(code);
+        Navigator.pop(context);
+      },
+    );
+  }
+}
+
+bool _isNoInternet(String message) {
+  final lower = message.toLowerCase();
+  return lower.contains('connection timeout') ||
+      lower.contains('internet connection') ||
+      lower.contains('failed host lookup') ||
+      lower.contains('no internet');
 }
 
 class CustomButtomSheetProfile extends StatelessWidget {

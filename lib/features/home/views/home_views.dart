@@ -6,6 +6,8 @@ import 'package:app_food/features/home/views/widget/catogery_item.dart';
 import 'package:app_food/features/home/views/widget/saerch_app.dart';
 import 'package:app_food/features/home/views/widget/user_header.dart';
 import 'package:app_food/features/product/view/producr_detalse_view.dart';
+import 'package:app_food/features/shared/no_internet_widget.dart';
+import 'package:app_food/features/shared/shimmer_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
@@ -96,6 +98,11 @@ class _HomeViewsState extends State<HomeViews> {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: BlocBuilder<HomeCubit, HomeState>(
+                  buildWhen: (previous, current) =>
+                      current is HomeCatogeryLoading ||
+                      current is HomeCatogerySuccess ||
+                      current is HomeCatogeryFailure ||
+                      current is HomeInitial,
                   builder: (context, state) {
                     if (state is HomeCatogeryLoading || state is HomeInitial) {
                       return const CategoryShimmer();
@@ -103,12 +110,17 @@ class _HomeViewsState extends State<HomeViews> {
                       final categories = state.categories
                           .map((e) => e.name)
                           .toList();
-
                       return CatogeryItem(
                         catogetry: categories,
                         selectIndex: selectIndex,
                       );
                     } else if (state is HomeCatogeryFailure) {
+                      if (_isNoInternet(state.error)) {
+                        return NoInternetWidget(
+                          onRetry: () =>
+                              context.read<HomeCubit>().refreshHome(),
+                        );
+                      }
                       return Center(child: Text(state.error));
                     }
                     return const SizedBox.shrink();
@@ -121,16 +133,20 @@ class _HomeViewsState extends State<HomeViews> {
             SliverPadding(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               sliver: BlocBuilder<HomeCubit, HomeState>(
+                buildWhen: (previous, current) =>
+                    current is HomeProductLoading ||
+                    current is HomeProductSuccess ||
+                    current is HomeProductFailure,
                 builder: (context, state) {
                   final cubit = context.read<HomeCubit>();
                   final products = cubit.products;
+                  final width = MediaQuery.of(context).size.width;
+                  final crossAxisCount = width >= 600 ? 3 : 2;
+                  final childAspectRatio = width >= 600 ? 0.9 : 0.78;
 
                   // تحميل أول صفحة
                   if (state is HomeProductLoading && products.isEmpty) {
-                    return SliverFillRemaining(
-                      hasScrollBody: false,
-                      child: Center(child: CircularProgressIndicator()),
-                    );
+                    return const ProductGridShimmer();
                   }
 
                   // عرض المنتجات
@@ -139,17 +155,18 @@ class _HomeViewsState extends State<HomeViews> {
                       itemCount: cubit.hasMore
                           ? products.length + 1
                           : products.length,
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 12,
-                            mainAxisSpacing: 10,
-                            childAspectRatio: 0.78,
-                          ),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: crossAxisCount,
+                        crossAxisSpacing: 12,
+                        mainAxisSpacing: 10,
+                        childAspectRatio: childAspectRatio,
+                      ),
                       itemBuilder: (context, index) {
                         // لو وصلنا آخر عنصر → نعرض لودينج بس، بدون نداء للدالة!
                         if (index == products.length) {
-                          return Center(child: CircularProgressIndicator());
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
                         }
 
                         final product = products[index];
@@ -178,7 +195,12 @@ class _HomeViewsState extends State<HomeViews> {
                   // لو حصل فشل
                   if (state is HomeProductFailure) {
                     return SliverToBoxAdapter(
-                      child: Center(child: Text(state.error)),
+                      child: _isNoInternet(state.error)
+                          ? NoInternetWidget(
+                              onRetry: () =>
+                                  context.read<HomeCubit>().refreshHome(),
+                            )
+                          : Center(child: Text(state.error)),
                     );
                   }
 
@@ -191,4 +213,12 @@ class _HomeViewsState extends State<HomeViews> {
       ),
     );
   }
+}
+
+bool _isNoInternet(String message) {
+  final lower = message.toLowerCase();
+  return lower.contains('connection timeout') ||
+      lower.contains('internet connection') ||
+      lower.contains('failed host lookup') ||
+      lower.contains('no internet');
 }

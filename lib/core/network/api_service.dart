@@ -2,16 +2,23 @@ import 'package:app_food/core/network/app_exception.dart';
 import 'package:app_food/core/network/dio_clint.dart';
 import 'package:dio/dio.dart';
 
-
 class ApiService {
-  final DioClient _dioClient = DioClient();
+  final DioClient _dioClient;
+
+  ApiService({DioClient? dioClient}) : _dioClient = dioClient ?? DioClient();
 
   /// CRUD METHODS
 
   /// get
-  Future<dynamic> get(String endPoint,   {Map<String, dynamic>? queryParameters}) async {
+  Future<dynamic> get(
+    String endPoint, {
+    Map<String, dynamic>? queryParameters,
+  }) async {
     try {
-      final response = await _dioClient.dio.get(endPoint, queryParameters: queryParameters, );
+      final response = await _dioClient.dio.get(
+        endPoint,
+        queryParameters: queryParameters,
+      );
       return response.data;
     } on DioException catch (e) {
       return ApiExceptions.handleError(e);
